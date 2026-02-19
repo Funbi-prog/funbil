@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Funbi Akintade — HealhubCenter</title>
+
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;600&family=DM+Mono:wght@300;400&display=swap"
+    rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #000000;
+      --card-bg: #080808;
+      --surface: #101010;
+      --surface2: #161616;
+      --accent: #fff;
+      --accent-dim: rgba(255, 255, 255, 0.55);
+      --accent-faint: rgba(255, 255, 255, 0.08);
+      --border: #1c1c1c;
+      --border-bright: #2a2a2a;
+      --green: #2ecc71;
+      --muted: #555;
+      --shimmer: rgba(255, 255, 255, 0.08);
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: 'DM Mono', monospace;
+      padding: 36px 16px;
+      background:
+        radial-gradient(circle at 15% 20%, rgba(0, 119, 255, 0.18), transparent 35%),
+        radial-gradient(circle at 85% 80%, rgba(0, 119, 255, 0.12), transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(0, 60, 150, 0.25), #000 70%);
+      background-color: #000;
+      overflow-x: hidden;
+    }
+
+    /* Soft moving glow layer */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: -30%;
+      background: radial-gradient(circle, rgba(0, 119, 255, 0.15) 0%, transparent 60%);
+      animation: floatGlow 18s ease-in-out infinite alternate;
+      pointer-events: none;
+      z-index: 0;
+      filter: blur(120px);
+    }
+
+    @keyframes floatGlow {
+      0% {
+        transform: translate(-10%, -10%) scale(1);
+      }
+
+      50% {
+        transform: translate(10%, 5%) scale(1.1);
+      }
+
+      100% {
+        transform: translate(0%, 15%) scale(1);
+      }
+    }
+
+
+    /* Subtle shimmer */
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: -40%;
+      background: linear-gradient(110deg,
+          transparent 40%,
+          var(--shimmer) 50%,
+          transparent 60%);
+      transform: translateX(-60%) rotate(2deg);
+      opacity: 0;
+      pointer-events: none;
+      z-index: 0;
+      animation: shimmerSweep 7.5s ease-in-out infinite;
+    }
+
+    @keyframes shimmerSweep {
+      0% {
+        transform: translateX(-60%) rotate(2deg);
+        opacity: 0;
+      }
+
+      12% {
+        opacity: 0.18;
+      }
+
+      20% {
+        opacity: 0.06;
+      }
+
+      45% {
+        transform: translateX(60%) rotate(2deg);
+        opacity: 0;
+      }
+
+      100% {
+        transform: translateX(60%) rotate(2deg);
+        opacity: 0;
+      }
+    }
+
+    .card>* {
+      position: relative;
+      z-index: 1;
+    }
+
+    .top-line {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.12), transparent);
+    }
+
+    /* ── PHOTO BANNER ── */
+    .photo-banner {
+      width: 100%;
+      height: 255px;
+      position: relative;
+      overflow: hidden;
+      background: #030303;
+    }
+
+    .photo-banner img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center 8%;
+      display: block;
+    }
+
+    .photo-banner::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to bottom, transparent 38%, rgba(8, 8, 8, 0.98) 100%);
+      pointer-events: none;
+    }
+
+    .photo-identity {
+      position: absolute;
+      bottom: 16px;
+      left: 20px;
+      right: 20px;
+      z-index: 3;
+    }
+
+    .founder-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 6.5px;
+      letter-spacing: 0.25em;
+      color: rgba(255, 255, 255, 0.7);
+      text-transform: uppercase;
+      margin-bottom: 7px;
+      padding: 3px 9px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 2px;
+      background: rgba(0, 0, 0, 0.6);
+      backdrop-filter: blur(6px);
+    }
+
+    .founder-dot {
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2.5s ease-in-out infinite;
+    }
+
+    .name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 33px;
+      font-weight: 300;
+      color: #fff;
+      line-height: 1.05;
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.9);
+    }
+
+    .name span {
+      font-weight: 600;
+    }
+
+    /* ── BRAND BAR ── */
+    .brand-bar {
+      padding: 11px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand-name {
+      font-size: 7px;
+      letter-spacing: 0.28em;
+      color: var(--accent-dim);
+      text-transform: uppercase;
+    }
+
+    .brand-role {
+      font-size: 7px;
+      letter-spacing: 0.15em;
+      color: var(--muted);
+      text-transform: uppercase;
+    }
+
+    /* ── CONTACT ITEMS ── */
+    .contacts {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .contact-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      opacity: 0;
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    .contact-item:nth-child(1) {
+      animation-delay: 0.4s
+    }
+
+    .contact-item:nth-child(2) {
+      animation-delay: 0.52s
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    .contact-icon {
+      width: 30px;
+      height: 30px;
+      border: 1px solid var(--border-bright);
+      background: var(--surface);
+      flex-shrink: 0;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .contact-icon svg {
+      width: 13px;
+      height: 13px;
+      stroke: rgba(255, 255, 255, 0.6);
+      fill: none;
+      stroke-width: 1.5;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .contact-label {
+      font-size: 7px;
+      letter-spacing: 0.2em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 3px;
+    }
+
+    .contact-value {
+      font-size: 11px;
+      color: var(--accent);
+      font-weight: 300;
+      letter-spacing: 0.03em;
+    }
+
+    .contact-value a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .contact-value a:hover {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* ── LINKS SECTION ── */
+    .links-section {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .section-label {
+      font-size: 6.5px;
+      letter-spacing: 0.3em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 4px;
+    }
+
+    .link-item {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      padding: 10px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      text-decoration: none;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+      opacity: 0;
+      animation: fadeIn 0.5s ease forwards;
+    }
+
+    .link-item:hover {
+      background: var(--surface2);
+      border-color: var(--border-bright);
+      transform: translateY(-1px);
+    }
+
+    .link-item:nth-child(2) {
+      animation-delay: 0.55s
+    }
+
+    .link-item:nth-child(3) {
+      animation-delay: 0.65s
+    }
+
+    .link-item:nth-child(4) {
+      animation-delay: 0.75s
+    }
+
+    .link-item:nth-child(5) {
+      animation-delay: 0.85s
+    }
+
+    .link-item:nth-child(6) {
+      animation-delay: 0.90s
+    }
+
+    .link-item:nth-child(7) {
+      animation-delay: 0.95s
+    }
+
+    .link-icon {
+      width: 30px;
+      height: 30px;
+      border: 1px solid var(--border-bright);
+      background: #0a0a0a;
+      flex-shrink: 0;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .link-icon svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    .link-text {
+      flex: 1;
+    }
+
+    .link-label {
+      font-size: 7px;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .link-url {
+      font-size: 10px;
+      color: rgba(255, 255, 255, 0.75);
+      letter-spacing: 0.02em;
+    }
+
+    .link-arrow {
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    /* ── SAVE BTN ── */
+    .save-section {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .save-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      width: 100%;
+      padding: 13px;
+      background: var(--accent);
+      border: none;
+      color: #000;
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+      font-weight: 400;
+    }
+
+    .save-btn:hover {
+      background: rgba(255, 255, 255, 0.85);
+    }
+
+    .save-btn svg {
+      width: 13px;
+      height: 13px;
+      stroke: #000;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    @keyframes ripple {
+      0% {
+        transform: scale(0);
+        opacity: 0.4
+      }
+
+      100% {
+        transform: scale(5);
+        opacity: 0
+      }
+    }
+
+    .ripple-el {
+      position: absolute;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(0, 0, 0, 0.2);
+      pointer-events: none;
+      transform: scale(0);
+      animation: ripple 0.6s ease-out forwards;
+    }
+
+    /* ── QR SECTION ── */
+    .qr-section {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    /* “Tap to scan” behavior */
+    .qr-wrap {
+      width: 84px;
+      height: 84px;
+      flex-shrink: 0;
+      background: #fff;
+      border-radius: 3px;
+      padding: 5px;
+      display: grid;
+      place-items: center;
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.18s ease, box-shadow 0.18s ease;
+      box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .qr-wrap:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    }
+
+    .qr-wrap::after {
+      content: "Tap to scan";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 8px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: rgba(0, 0, 0, 0.75);
+      background: rgba(255, 255, 255, 0.88);
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      padding: 6px 8px;
+      border-radius: 2px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.18s ease;
+      mix-blend-mode: multiply;
+      white-space: nowrap;
+    }
+
+    .qr-wrap:hover::after {
+      opacity: 1;
+    }
+
+    .qr-wrap.is-tapped::after {
+      opacity: 1;
+    }
+
+    #qrcode {
+      width: 74px;
+      height: 74px;
+    }
+
+    #qrcode canvas,
+    #qrcode img {
+      width: 74px !important;
+      height: 74px !important;
+      display: block;
+    }
+
+    .qr-info {
+      flex: 1;
+    }
+
+    .qr-title {
+      font-size: 8px;
+      letter-spacing: 0.22em;
+      color: rgba(255, 255, 255, 0.5);
+      text-transform: uppercase;
+      margin-bottom: 5px;
+    }
+
+    .qr-desc {
+      font-size: 10px;
+      color: var(--muted);
+      line-height: 1.5;
+      font-weight: 300;
+    }
+
+    /* Click-to-copy styling for URL text */
+    .qr-url,
+    .share-copy-text {
+      font-size: 8px;
+      color: rgba(255, 255, 255, 0.35);
+      margin-top: 6px;
+      letter-spacing: 0.05em;
+      word-break: break-all;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.2s ease;
+      user-select: none;
+    }
+
+    .qr-url:hover,
+    .share-copy-text:hover {
+      color: rgba(255, 255, 255, 0.65);
+    }
+
+    .copy-pill {
+      font-size: 7px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      border: 1px solid var(--border-bright);
+      padding: 3px 6px;
+      border-radius: 2px;
+      color: rgba(255, 255, 255, 0.45);
+    }
+
+    .copy-pill.ok {
+      border-color: var(--green);
+      color: var(--green);
+    }
+
+    /* ── FOOTER ── */
+    .footer-bar {
+      padding: 10px 20px;
+      background: #030303;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .footer-site {
+      font-size: 8px;
+      color: var(--muted);
+      letter-spacing: 0.18em;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 8px;
+      color: var(--muted);
+    }
+
+    .status-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--green);
+      animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+      0%,
+      100% {
+        opacity: 0.4;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.5)
+      }
+    }
+
+    /* ── SHARE ── */
+    .share-section {
+      margin-top: 12px;
+    }
+
+    .share-url {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 11px 14px;
+      background: #080808;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+    }
+
+    .share-url span {
+      flex: 1;
+      font-size: 9px;
+      color: var(--muted);
+      letter-spacing: 0.08em;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .copy-btn {
+      flex-shrink: 0;
+      background: none;
+      border: 1px solid var(--border-bright);
+      color: rgba(255, 255, 255, 0.5);
+      font-family: 'DM Mono', monospace;
+      font-size: 8px;
+      letter-spacing: 0.15em;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all 0.2s;
+      text-transform: uppercase;
+    }
+
+    .copy-btn:hover {
+      background: var(--surface2);
+      color: #fff;
+    }
+
+    .copy-btn.copied {
+      color: var(--green);
+      border-color: var(--green);
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: #080808;
+      border: 1px solid var(--green);
+      color: var(--green);
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: 0.15em;
+      padding: 12px 22px;
+      border-radius: 3px;
+      opacity: 0;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+      white-space: nowrap;
+      z-index: 100;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="card-wrap">
+    <div class="card">
+      <div class="top-line"></div>
+
+      <!-- PHOTO -->
+      <div class="photo-banner">
+        <img id="im" src="img/funbi.jpeg" alt="Funbi Akintade">
+        <div class="photo-identity">
+          <div class="founder-tag">
+            <div class="founder-dot"></div>
+            Founder &amp; CEO
+          </div>
+          <div class="name">Funbi <span>Akintade</span></div>
+        </div>
+      </div>
+
+      <!-- BRAND BAR -->
+      <div class="brand-bar">
+        <span class="brand-name">HealhubCenter</span>
+        <span class="brand-role">Founder &amp; CEO</span>
+      </div>
+
+      <!-- CONTACTS -->
+      <div class="contacts">
+        <div class="contact-item">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.5a19.79 19.79 0 01-3.07-8.67A2 2 0 012 .82h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
+            </svg>
+          </div>
+          <div>
+            <div class="contact-label">Phone</div>
+            <div class="contact-value"><a href="tel:+2347025511392">+234 702 551 1392</a></div>
+          </div>
+        </div>
+
+        <div class="contact-item">
+          <div class="contact-icon">
+            <svg viewBox="0 0 24 24">
+              <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+          </div>
+          <div>
+            <div class="contact-label">Email</div>
+            <div class="contact-value"><a
+                href="mailto:FunbiAkintade@healhubcenter.ai">FunbiAkintade@healhubcenter.ai</a></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LINKS -->
+      <div class="links-section">
+        <div class="section-label">Links &amp; Socials</div>
+
+        <a class="link-item" href="https://funbiakintade.netlify.app" target="_blank" rel="noopener">
+          <div class="link-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.75)" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="2" y1="12" x2="22" y2="12" />
+              <path d="M12 2a15.3 15.3 0 014 10 15.3 15.3 0 01-4 10 15.3 15.3 0 01-4-10 15.3 15.3 0 014-10z" />
+            </svg>
+          </div>
+          <div class="link-text">
+            <div class="link-label">Portfolio</div>
+            <div class="link-url">funbiakintade.netlify.app</div>
+          </div>
+          <span class="link-arrow">↗</span>
+        </a>
+
+        <a class="link-item" href="https://www.linkedin.com/in/funbiakintade" target="_blank" rel="noopener">
+          <div class="link-icon">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="2" width="20" height="20" rx="3" ry="3" fill="none" stroke="rgba(255,255,255,0.75)"
+                stroke-width="1.5" />
+              <path d="M7 10v7" stroke="rgba(255,255,255,0.75)" stroke-width="1.5" stroke-linecap="round" />
+              <circle cx="7" cy="7.5" r="1" fill="rgba(255,255,255,0.75)" />
+              <path d="M11 17v-4a2 2 0 014 0v4" stroke="rgba(255,255,255,0.75)" stroke-width="1.5"
+                stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M11 13v4" stroke="rgba(255,255,255,0.75)" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </div>
+          <div class="link-text">
+            <div class="link-label">LinkedIn</div>
+            <div class="link-url">linkedin.com/in/funbiakintade</div>
+          </div>
+          <span class="link-arrow">↗</span>
+        </a>
+
+        <a class="link-item" href="https://www.instagram.com/funbiakintade" target="_blank" rel="noopener">
+          <div class="link-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.75)" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+              <path d="M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37z" />
+              <line x1="17.5" y1="6.5" x2="17.51" y2="6.5" />
+            </svg>
+          </div>
+          <div class="link-text">
+            <div class="link-label">Instagram</div>
+            <div class="link-url">@funbiakintade</div>
+          </div>
+          <span class="link-arrow">↗</span>
+        </a>
+
+        <a class="link-item" href="https://www.healhubcenter.com" target="_blank" rel="noopener">
+          <div class="link-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.75)" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+            </svg>
+          </div>
+          <div class="link-text">
+            <div class="link-label">Company Website</div>
+            <div class="link-url">healhubcenter.com</div>
+          </div>
+          <span class="link-arrow">↗</span>
+        </a>
+
+        <a class="link-item" href="https://www.healhubcenter.ai" target="_blank" rel="noopener">
+          <div class="link-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.75)" stroke-width="1.5"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="6" height="6" rx="1" />
+              <path d="M9 2v3M15 2v3M9 19v3M15 19v3M2 9h3M2 15h3M19 9h3M19 15h3" />
+              <rect x="4" y="4" width="16" height="16" rx="3" />
+            </svg>
+          </div>
+          <div class="link-text">
+            <div class="link-label">HealhubCenter AI</div>
+            <div class="link-url">healhubcenter.ai</div>
+          </div>
+          <span class="link-arrow">↗</span>
+        </a>
+      </div>
+
+      <!-- SAVE CONTACT -->
+      <div class="save-section">
+        <button class="save-btn" onclick="saveContact(event)">
+          <svg viewBox="0 0 24 24">
+            <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+            <circle cx="12" cy="7" r="4" />
+          </svg>
+          Save Contact
+        </button>
+      </div>
+
+      <!-- QR CODE -->
+      <div class="qr-section">
+        <div class="qr-wrap" id="qrWrap" role="button" tabindex="0" aria-label="Tap to scan QR">
+          <div id="qrcode"></div>
+        </div>
+        <div class="qr-info">
+          <div class="qr-title">Scan to Connect</div>
+          <div class="qr-desc">Point your camera here to open this card on any device.</div>
+
+          <!-- Click-to-copy URL -->
+          <div class="qr-url" id="qrUrlText" data-copy="https://funbiakintade.healhubcenter.com">
+            funbiakintade.healhubcenter.com
+            <span class="copy-pill" id="qrCopyPill">Copy</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- FOOTER -->
+      <div class="footer-bar">
+        <span class="footer-site">healhubcenter.ai</span>
+        <div class="status">
+          <div class="status-dot"></div> Active
+        </div>
+      </div>
+    </div>
+
+    <!-- SHARE URL -->
+    <div class="share-section">
+      <div class="share-url">
+        <div class="share-copy-text" id="shareText" data-copy="https://funbiakintade.healhubcenter.com">
+          <span>funbiakintade.healhubcenter.com</span>
+          <span class="copy-pill" id="shareCopyPill">Copy</span>
+        </div>
+
+        <button class="copy-btn" id="copyBtn" onclick="copyUrl()">Copy Link</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">✓ Contact saved to your phone!</div>
+
+  <script>
+    const PROFILE_URL = "https://funbiakintade.healhubcenter.com";
+
+    window.addEventListener("DOMContentLoaded", () => {
+      // Generate QR
+      const qrEl = document.getElementById("qrcode");
+      qrEl.innerHTML = "";
+      new QRCode(qrEl, {
+        text: PROFILE_URL,
+        width: 74,
+        height: 74,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
+      });
+
+      // Tap-to-scan hint on mobile (shows overlay briefly)
+      const wrap = document.getElementById("qrWrap");
+      const showHint = () => {
+        wrap.classList.add("is-tapped");
+        setTimeout(() => wrap.classList.remove("is-tapped"), 900);
+      };
+      wrap.addEventListener("click", showHint);
+      wrap.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") { e.preventDefault(); showHint(); }
+      });
+
+      // Click-to-copy both URL texts
+      wireCopyText("qrUrlText", "qrCopyPill");
+      wireCopyText("shareText", "shareCopyPill");
+    });
+
+    function wireCopyText(textId, pillId) {
+      const el = document.getElementById(textId);
+      const pill = document.getElementById(pillId);
+
+      el.addEventListener("click", async () => {
+        const value = el.getAttribute("data-copy") || el.textContent.trim();
+        await navigator.clipboard.writeText(value);
+
+        pill.classList.add("ok");
+        pill.textContent = "Copied";
+        setTimeout(() => {
+          pill.classList.remove("ok");
+          pill.textContent = "Copy";
+        }, 1200);
+      });
+    }
+
+    const vcard =
+      "BEGIN:VCARD\r\nVERSION:3.0\r\nN:Akintade;Funbi;;;\r\nFN:Funbi Akintade\r\nORG:HealhubCenter\r\nTITLE:Founder & CEO\r\nTEL;TYPE=CELL:+2347025511392\r\nEMAIL:FunbiAkintade@healhubcenter.ai\r\nURL:https://funbiakintade.netlify.app\r\nURL:https://healhubcenter.com\r\nURL:https://healhubcenter.ai\r\nURL:https://www.linkedin.com/in/funbiakintade\r\nURL:https://www.instagram.com/funbiakintade\r\nEND:VCARD";
+
+    function saveContact(e) {
+      const btn = e.currentTarget;
+      const ripple = document.createElement("div");
+      ripple.className = "ripple-el";
+      const rect = btn.getBoundingClientRect();
+      ripple.style.left = (e.clientX - rect.left - 20) + "px";
+      ripple.style.top = (e.clientY - rect.top - 20) + "px";
+      btn.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 700);
+
+      const blob = new Blob([vcard], { type: "text/vcard;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "Funbi-Akintade.vcf";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      document.getElementById("toast").classList.add("show");
+      setTimeout(() => document.getElementById("toast").classList.remove("show"), 3000);
+    }
+
+    function copyUrl() {
+      navigator.clipboard.writeText(PROFILE_URL).then(() => {
+        const btn = document.getElementById("copyBtn");
+        btn.textContent = "Copied!";
+        btn.classList.add("copied");
+        setTimeout(() => {
+          btn.textContent = "Copy Link";
+          btn.classList.remove("copied");
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+
+</html>
