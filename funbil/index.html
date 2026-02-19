@@ -757,7 +757,7 @@
           <div class="contact-icon">
             <svg viewBox="0 0 24 24">
               <path
-                d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.5a19.79 19.79 0 01-3.07-8.67A2 2 0 012 .82h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
+                d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 03.07 9.5a19.79 19.79 0 01-3.07-8.67A2 2 0 012 .82h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 8.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z" />
             </svg>
           </div>
           <div>
@@ -888,9 +888,9 @@
           <div class="qr-title">Scan to Connect</div>
           <div class="qr-desc">Point your camera here to open this card on any device.</div>
 
-          <!-- Click-to-copy URL -->
-          <div class="qr-url" id="qrUrlText" data-copy="https://funbiakintade.healhubcenter.ai">
-            funbiakintade.healhubcenter.com
+          <!-- Click-to-copy URL (auto-filled by JS) -->
+          <div class="qr-url" id="qrUrlText" data-copy="">
+            loading...
             <span class="copy-pill" id="qrCopyPill">Copy</span>
           </div>
         </div>
@@ -908,8 +908,8 @@
     <!-- SHARE URL -->
     <div class="share-section">
       <div class="share-url">
-        <div class="share-copy-text" id="shareText" data-copy="https://funbiakintade.healhubcenter.ai">
-          <span>funbiakintade.healhubcenter.com</span>
+        <div class="share-copy-text" id="shareText" data-copy="">
+          <span>loading...</span>
           <span class="copy-pill" id="shareCopyPill">Copy</span>
         </div>
 
@@ -921,11 +921,17 @@
   <div class="toast" id="toast">✓ Contact saved to your phone!</div>
 
   <script>
-    // ✅ Single source of truth for the link
-    const PROFILE_URL = "https://funbiakintade.healhubcenter.ai";
+    // ✅ Auto URL: uses the page you're currently on (works on GitHub Pages now, Vercel later, custom domain later)
+    const PROFILE_URL = (() => {
+      const isWeb = (window.location.protocol === "http:" || window.location.protocol === "https:");
+      if (isWeb) return window.location.href.split("#")[0];
+
+      // If opened locally (file:///), fallback to your GitHub repo (safe placeholder)
+      return "https://github.com/Funbi-prog/funbil";
+    })();
 
     window.addEventListener("DOMContentLoaded", () => {
-      // ✅ Keep displayed + copy links in sync automatically
+      // Keep displayed + copy links in sync automatically
       syncProfileLinks();
 
       // Generate QR
@@ -968,7 +974,6 @@
 
       // Update visible host text (without https://)
       if (qrUrlText) {
-        // keep the Copy pill inside
         const pill = qrUrlText.querySelector("span");
         qrUrlText.innerHTML = `${cleanHost} `;
         qrUrlText.appendChild(pill);
